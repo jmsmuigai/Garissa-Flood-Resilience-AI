@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Garissa Flood Resilience AI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Garissa Flood Resilience AI | A New Vision</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -15,182 +15,226 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Exo 2', sans-serif; background-color: var(--dark-bg); color: white; overflow-x: hidden; line-height: 1.6; }
+        body { font-family: 'Exo 2', sans-serif; background: linear-gradient(180deg, var(--dark-bg) 0%, var(--darker-bg) 100%); color: #e0e0e0; overflow-x: hidden; line-height: 1.7; }
         h1, h2, h3, h4 { font-family: 'Orbitron', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-        header { position: relative; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; z-index: 10; }
-        .particles-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-        .logo { font-size: 4rem; margin-bottom: 1rem; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: var(--glow); animation: pulse 3s infinite alternate; }
-        .tagline { font-size: 1.5rem; margin-bottom: 2rem; max-width: 800px; color: rgba(255, 255, 255, 0.8); }
-        .cta-button { display: inline-block; padding: 12px 30px; background: transparent; border: 2px solid var(--neon-blue); color: var(--neon-blue); text-decoration: none; font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; transition: all 0.3s ease; box-shadow: var(--glow); }
-        .cta-button:hover { background: var(--neon-blue); color: var(--dark-bg); box-shadow: 0 0 20px var(--neon-blue); }
+        /* Scroll Animations */
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
 
-        nav { position: fixed; top: 0; width: 100%; padding: 20px 0; z-index: 100; background: rgba(10, 10, 26, 0.8); backdrop-filter: blur(10px); }
+        /* Header & Nav */
+        nav { position: fixed; top: 0; width: 100%; padding: 20px 0; z-index: 100; background: rgba(10, 10, 26, 0.8); backdrop-filter: blur(10px); transition: top 0.3s; }
         .nav-container { display: flex; justify-content: space-between; align-items: center; }
-        .nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.5rem; color: white; text-decoration: none; }
+        .nav-logo { font-weight: 700; font-size: 1.5rem; color: white; text-decoration: none; }
         .nav-links { display: flex; list-style: none; }
         .nav-links li { margin-left: 30px; }
-        .nav-links a { color: white; text-decoration: none; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s ease; }
+        .nav-links a { color: white; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; transition: color 0.3s ease; }
         .nav-links a:hover { color: var(--neon-blue); }
-        .mobile-menu { display: none; font-size: 1.8rem; cursor: pointer; z-index: 1001; }
+        .mobile-menu { display: none; font-size: 1.8rem; cursor: pointer; }
 
-        section { padding: 100px 0; position: relative; }
+        header { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; }
+        #particles-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        header h1 { font-size: 4rem; margin-bottom: 1rem; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: var(--glow); }
+        header p { font-size: 1.4rem; margin-bottom: 2rem; max-width: 700px; color: rgba(255, 255, 255, 0.8); }
+        .cta-button { display: inline-block; padding: 12px 30px; border: 2px solid var(--neon-blue); color: var(--neon-blue); text-decoration: none; font-family: 'Orbitron', sans-serif; text-transform: uppercase; transition: all 0.3s ease; box-shadow: var(--glow); }
+        .cta-button:hover { background: var(--neon-blue); color: var(--dark-bg); box-shadow: 0 0 20px var(--neon-blue); }
+
+        /* General Section Styling */
+        section { padding: 120px 0; }
         .section-title { text-align: center; margin-bottom: 60px; font-size: 2.5rem; color: var(--neon-green); text-shadow: 0 0 10px rgba(5, 217, 232, 0.5); }
+        .section-subtitle { text-align: center; max-width: 800px; margin: -40px auto 60px; font-size: 1.1rem; color: rgba(255,255,255,0.7); }
 
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px; }
-        .dashboard-card { background: var(--card-bg); border-radius: 10px; padding: 25px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
-        .dashboard-card:hover { transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2); }
+        /* Dashboard */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .dashboard-card { background: var(--card-bg); border-radius: 10px; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
         .card-header { display: flex; align-items: center; margin-bottom: 20px; }
-        .card-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 1.2rem; }
-        .card-title { font-size: 1.2rem; color: var(--neon-blue); }
-        .chart-container { height: 200px; position: relative; }
+        .card-icon { font-size: 1.5rem; margin-right: 15px; color: var(--neon-blue); }
+        .card-title { font-size: 1.2rem; }
+        .chart-container { height: 220px; }
 
-        .map-container { height: 500px; border-radius: 10px; overflow: hidden; position: relative; background: var(--darker-bg); border: 1px solid rgba(0, 243, 255, 0.3); box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); }
+        /* 3D Map Section */
+        .map-section-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        #map-container { height: 500px; border-radius: 10px; background: var(--darker-bg); border: 1px solid rgba(0, 243, 255, 0.3); }
+        .map-description h3 { color: var(--neon-purple); margin-bottom: 15px; }
 
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
-        .feature-card { background: var(--card-bg); border-radius: 10px; padding: 30px; text-align: center; transition: transform 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(185, 103, 255, 0.2); }
-        .feature-icon { font-size: 2.5rem; margin-bottom: 20px; color: var(--neon-purple); }
-        .feature-title { font-size: 1.3rem; margin-bottom: 15px; color: var(--neon-green); }
-
-        .blog-container { max-width: 800px; margin: 0 auto; background: var(--card-bg); border-radius: 10px; padding: 40px; box-shadow: 0 0 30px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); }
+        /* Blog / Transmission Log */
+        .blog-container { max-width: 800px; margin: 0 auto; background: var(--card-bg); border-radius: 10px; padding: 40px; border: 1px solid rgba(255, 255, 255, 0.1); }
         .blog-title { font-size: 2rem; margin-bottom: 20px; color: var(--neon-pink); }
-        .blog-meta { display: flex; flex-wrap: wrap; margin-bottom: 30px; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; }
-        .blog-meta span { margin-right: 20px; }
-        .blog-content { font-size: 1.1rem; line-height: 1.8; }
+        .blog-meta { margin-bottom: 30px; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; }
         .blog-content p { margin-bottom: 20px; }
-        .blog-highlight { background: rgba(0, 243, 255, 0.1); border-left: 3px solid var(--neon-blue); padding: 20px; margin: 30px 0; border-radius: 0 5px 5px 0; }
-        .blog-code { background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 5px; margin: 20px 0; font-family: monospace; overflow-x: auto; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .blog-highlight { background: rgba(0, 243, 255, 0.1); border-left: 3px solid var(--neon-blue); padding: 20px; margin: 30px 0; border-radius: 5px; }
+        .blog-code { background: #050510; padding: 20px; border-radius: 5px; margin: 20px 0; font-family: monospace; overflow-x: auto; border: 1px solid rgba(255, 255, 255, 0.2); }
 
+        /* Footer */
         footer { background: var(--darker-bg); padding: 60px 0 30px; text-align: center; }
-        .footer-links { display: flex; justify-content: center; list-style: none; margin-bottom: 30px; flex-wrap: wrap; }
+        .footer-links { display: flex; justify-content: center; list-style: none; margin: 30px 0; flex-wrap: wrap; }
         .footer-links li { margin: 10px 15px; }
         .footer-links a { color: rgba(255, 255, 255, 0.7); text-decoration: none; transition: color 0.3s ease; }
         .footer-links a:hover { color: var(--neon-blue); }
         .copyright { color: rgba(255, 255, 255, 0.5); font-size: 0.9rem; }
 
-        @keyframes pulse { 0% { text-shadow: 0 0 10px rgba(0, 243, 255, 0.7); } 100% { text-shadow: 0 0 20px rgba(0, 243, 255, 0.9), 0 0 30px rgba(0, 243, 255, 0.5); } }
-        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
-        .floating { animation: float 5s ease-in-out infinite; }
-
+        /* Responsive */
         @media (max-width: 768px) {
-            .logo { font-size: 2.5rem; }
-            .tagline { font-size: 1.2rem; }
-            .nav-links { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 26, 0.98); flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+            header h1 { font-size: 2.8rem; }
+            header p { font-size: 1.2rem; }
+            .nav-links { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 26, 0.98); flex-direction: column; justify-content: center; align-items: center; }
             .nav-links.active { display: flex; }
             .nav-links li { margin: 20px 0; }
-            .mobile-menu { display: block; position: fixed; top: 20px; right: 20px; z-index: 1001; }
-            .section-title { font-size: 2rem; }
-            .map-container { height: 300px; }
+            .mobile-menu { display: block; }
+            .map-section-layout { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <nav>
+    <nav id="navbar">
         <div class="container nav-container">
             <a href="#home" class="nav-logo">GFRAI</a>
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#problem">The Problem</a></li>
+                <li><a href="#dashboard">Live Dashboard</a></li>
                 <li><a href="#map">3D Map</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#blog">Blog</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#log">Transmission Log</a></li>
             </ul>
             <div class="mobile-menu">☰</div>
         </div>
     </nav>
 
     <header id="home">
-        <div class="particles-container" id="particles-js"></div>
-        <h1 class="logo floating">Garissa Flood Resilience AI</h1>
-        <p class="tagline">Advanced AI-powered flood monitoring, prediction, and community alert system for Garissa County, Kenya</p>
-        <a href="#dashboard" class="cta-button">Explore Dashboard</a>
+        <div id="particles-canvas"></div>
+        <h1 class="reveal">Garissa Flood Resilience AI</h1>
+        <p class="reveal">A new paradigm for disaster management, transforming reactive response into AI-powered foresight.</p>
+        <a href="#problem" class="cta-button reveal">Discover the Mission</a>
     </header>
 
     <main>
-        <section id="dashboard"> <!-- Dashboard content --> </section>
-        <section id="map">
+        <section id="problem">
             <div class="container">
-                <h2 class="section-title">3D Geospatial Intelligence</h2>
-                <div class="map-container" id="map-canvas-container"></div>
+                <h2 class="section-title reveal">Beyond the High-Water Mark</h2>
+                <p class="section-subtitle reveal">The 2023-2024 El Niño floods were a cascading failure. A surge down the Tana River resulted in chaos. Roads became rivers. Farms became lakes. We were caught in a reactive loop, always a step behind the water's advance. But as the crisis unfolded, a silent observer was collecting the definitive data from 400 miles above. This project turns that data into a proactive weapon against future disasters.</p>
             </div>
         </section>
-        <section id="features"> <!-- Features content --> </section>
-        <section id="blog"> <!-- Blog content --> </section>
+
+        <section id="dashboard">
+            <div class="container">
+                <h2 class="section-title reveal">Real-Time Intelligence Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card reveal"><div class="card-header"><span class="card-icon">🌊</span><h3 class="card-title">Flood Extent</h3></div><div class="chart-container"><canvas id="floodChart"></canvas></div></div>
+                    <div class="dashboard-card reveal"><div class="card-header"><span class="card-icon">⚠️</span><h3 class="card-title">Early Warning</h3></div><div class="chart-container"><canvas id="warningChart"></canvas></div></div>
+                    <div class="dashboard-card reveal"><div class="card-header"><span class="card-icon">🌾</span><h3 class="card-title">Agricultural Impact</h3></div><div class="chart-container"><canvas id="agriChart"></canvas></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="map">
+            <div class="container">
+                <h2 class="section-title reveal">3D Geospatial Intelligence</h2>
+                <div class="map-section-layout">
+                    <div id="map-container" class="reveal"></div>
+                    <div class="map-description reveal">
+                        <h3>Visualize the Data</h3>
+                        <p>This interactive 3D model represents the terrain of Garissa County. The animated points simulate real-time data being collected from satellite imagery, river gauges, and ground sensors. By fusing these disparate streams, our AI can visualize and predict where floodwaters will have the most impact, allowing for pre-emptive resource allocation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="log">
+            <div class="container">
+                <h2 class="section-title reveal">Transmission Log</h2>
+                <div class="blog-container reveal">
+                    <h2 class="blog-title">Ground Truth Protocol</h2>
+                    <div class="blog-meta"><span>By James Mukoma</span><span id="blog-date"></span></div>
+                    <div class="blog-content">
+                        <p>Data without context is noise. The Sentinel-1 satellite layer, while accurate, only becomes intelligent when fused with local knowledge. In collaboration with the Garissa Farmers Network, we initiated a new protocol.</p>
+                        <div class="blog-highlight"><p>We project the flood extent layer onto community maps in our workshops. The effect is immediate and profound.</p></div>
+                        <div class="blog-code">[SYSTEM READOUT: Live Dashboard - 'Community Alert Systems']<br>// STATUS: ENGAGED // <br>// RESULT: 12 schools, 3 clinics, and 47 key farms identified within the high-risk flood zone.</div>
+                        <p>This process transforms abstract data into a shared, tangible reality. It empowers our communities to become key partners in designing a defense, moving them from victims of a past crisis to architects of their future safety.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <footer id="contact"> <!-- Footer content --> </footer>
+    <footer id="contact">
+        <div class="container">
+            <h2 class="section-title reveal">Join the Mission</h2>
+            <p class="section-subtitle reveal">This is an invitation to co-create our future. We are calling on development partners, climate funds, and technology philanthropists to help us fund critical system upgrades. Let's invest in the infrastructure of foresight.</p>
+            <a href="mailto:jmsmuigai@gmail.com" class="cta-button reveal">Contact James Mukoma</a>
+            <ul class="footer-links reveal">
+                <li><a href="https://linkedin.com/in/james-mukoma-86534438/">LinkedIn</a></li>
+                <li><a href="https://github.com/jmsmuigai">GitHub</a></li>
+            </ul>
+            <p class="copyright reveal">© <span id="copyright-year"></span> Garissa Flood Resilience AI. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set current year in footer
-            const yearSpan = document.getElementById('year');
-            if(yearSpan) yearSpan.textContent = new Date().getFullYear();
+            // --- DYNAMIC DATES ---
+            document.getElementById('copyright-year').textContent = new Date().getFullYear();
+            document.getElementById('blog-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-            // Mobile menu toggle
+            // --- MOBILE MENU ---
             const mobileMenu = document.querySelector('.mobile-menu');
             const navLinks = document.querySelector('.nav-links');
-            if(mobileMenu) {
-                mobileMenu.addEventListener('click', function() {
-                    navLinks.classList.toggle('active');
-                });
-            }
-
-            // Smooth scrolling for navigation links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
-                    if (navLinks.classList.contains('active')) {
-                        navLinks.classList.remove('active');
-                    }
-                });
+            mobileMenu.addEventListener('click', () => navLinks.classList.toggle('active'));
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => navLinks.classList.remove('active'));
             });
 
-            // Initialize Three.js particle background
-            function initParticles() { /* ... particle code ... */ }
-
-            // Initialize 3D Map Visualization (FIXED)
-            function init3DMap() {
-                const container = document.getElementById('map-canvas-container');
-                if (!container) return;
-
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-                const renderer = new THREE.WebGLRenderer({ alpha: true });
-                renderer.setSize(container.clientWidth, container.clientHeight);
-                container.appendChild(renderer.domElement);
-
-                const geometry = new THREE.SphereGeometry(1.5, 32, 32);
-                const material = new THREE.MeshBasicMaterial({ color: 0x00f3ff, wireframe: true });
-                const globe = new THREE.Mesh(geometry, material);
-                scene.add(globe);
-
-                camera.position.z = 3;
-
-                function animate() {
-                    requestAnimationFrame(animate);
-                    globe.rotation.y += 0.005;
-                    renderer.render(scene, camera);
-                }
-                animate();
-
-                window.addEventListener('resize', () => {
-                    camera.aspect = container.clientWidth / container.clientHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(container.clientWidth, container.clientHeight);
+            // --- SCROLL REVEAL ANIMATIONS ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
                 });
-            }
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-            // Initialize charts
-            function initCharts() { /* ... chart code ... */ }
+            // --- THREE.JS BACKGROUND ---
+            const bgScene = new THREE.Scene();
+            const bgCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const bgRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('particles-canvas') });
+            bgRenderer.setSize(window.innerWidth, window.innerHeight);
+            const particles = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: 0.015, color: 0x00f3ff }));
+            const positions = [];
+            for (let i = 0; i < 5000; i++) { positions.push((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10); }
+            particles.geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            bgScene.add(particles);
+            bgCamera.position.z = 2;
+            function animateBg() { requestAnimationFrame(animateBg); particles.rotation.y += 0.0005; bgRenderer.render(bgScene, bgCamera); }
+            animateBg();
 
-            // Initialize everything
-            initParticles();
-            init3DMap();
-            initCharts();
+            // --- THREE.JS 3D MAP ---
+            const mapContainer = document.getElementById('map-container');
+            const mapScene = new THREE.Scene();
+            const mapCamera = new THREE.PerspectiveCamera(75, mapContainer.clientWidth / mapContainer.clientHeight, 0.1, 1000);
+            const mapRenderer = new THREE.WebGLRenderer({ alpha: true });
+            mapRenderer.setSize(mapContainer.clientWidth, mapContainer.clientHeight);
+            mapContainer.appendChild(mapRenderer.domElement);
+            const globe = new THREE.Mesh(new THREE.SphereGeometry(1.2, 32, 32), new THREE.MeshBasicMaterial({ color: 0x05d9e8, wireframe: true }));
+            mapScene.add(globe);
+            mapCamera.position.z = 2.5;
+            function animateMap() { requestAnimationFrame(animateMap); globe.rotation.y += 0.005; mapRenderer.render(mapScene, mapCamera); }
+            animateMap();
+
+            // --- CHART.JS DASHBOARDS ---
+            const chartOptions = (legendDisplay = false) => ({ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: legendDisplay, labels: { color: '#e0e0e0' } } }, scales: { y: { ticks: { color: '#e0e0e0' } }, x: { ticks: { color: '#e0e0e0' } } } });
+            new Chart(document.getElementById('floodChart'), { type: 'line', data: { labels: ['-6d', '-5d', '-4d', '-3d', '-2d', '-1d', 'Today'], datasets: [{ label: 'Flood Extent (km²)', data: [190, 210, 200, 240, 280, 270, 284], borderColor: '#00f3ff', tension: 0.4, fill: true, backgroundColor: 'rgba(0, 243, 255, 0.1)' }] }, options: chartOptions() });
+            new Chart(document.getElementById('warningChart'), { type: 'bar', data: { labels: ['Bura', 'Dadaab', 'Fafi', 'Garissa'], datasets: [{ label: 'Flood Risk (%)', data: [85, 92, 78, 65], backgroundColor: ['#ff2a6d', '#ff2a6d', '#fbbc04', '#05d9e8'] }] }, options: chartOptions() });
+            new Chart(document.getElementById('agriChart'), { type: 'doughnut', data: { labels: ['Unaffected', 'Moderate', 'Severe'], datasets: [{ data: [45, 35, 20], backgroundColor: ['#05d9e8', '#b967ff', '#ff2a6d'], borderWidth: 0 }] }, options: chartOptions(true) });
+
+            // --- RESIZE HANDLER ---
+            window.addEventListener('resize', () => {
+                bgCamera.aspect = window.innerWidth / window.innerHeight;
+                bgCamera.updateProjectionMatrix();
+                bgRenderer.setSize(window.innerWidth, window.innerHeight);
+                mapCamera.aspect = mapContainer.clientWidth / mapContainer.clientHeight;
+                mapCamera.updateProjectionMatrix();
+                mapRenderer.setSize(mapContainer.clientWidth, mapContainer.clientHeight);
+            });
         });
     </script>
 </body>
