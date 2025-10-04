@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garissa Flood Resilience | AI-Powered Early Warning System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --neon-blue: #00f3ff; --neon-purple: #b967ff; --neon-pink: #ff2a6d; --neon-green: #05ffa1;
+            --dark-space: #0a0a1f; --deep-space: #050510; --card-glow: rgba(0, 243, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Exo 2', sans-serif; background: var(--dark-space); color: white; overflow-x: hidden;
+            background-image: radial-gradient(circle at 10% 20%, rgba(185, 103, 255, 0.1) 0%, transparent 25%),
+                              radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 25%),
+                              radial-gradient(circle at 50% 50%, rgba(255, 42, 109, 0.05) 0%, transparent 40%);
+        }
+        #three-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
+
+        header { padding: 25px 0; background: rgba(10, 10, 31, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 243, 255, 0.3); position: fixed; width: 100%; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 900; background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 30px rgba(0, 243, 255, 0.5); }
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 500; position: relative; transition: all 0.3s ease; }
+        .nav-links a::before { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--neon-green); transition: width 0.3s ease; }
+        .nav-links a:hover { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
+        .nav-links a:hover::before { width: 100%; }
+
+        .hero { min-height: 100vh; display: flex; align-items: center; position: relative; padding: 120px 0 80px; }
+        .hero-content { max-width: 800px; }
+        .hero-title { font-family: 'Orbitron', sans-serif; font-size: 4.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 30px; background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple), var(--neon-pink)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 50px rgba(185, 103, 255, 0.5); }
+        .hero-subtitle { font-size: 1.5rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 40px; line-height: 1.6; }
+        .cta-buttons { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 50px; }
+        .btn { padding: 15px 35px; border: none; border-radius: 8px; font-family: 'Exo 2', sans-serif; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .btn-primary { background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple)); color: white; box-shadow: 0 0 30px rgba(0, 243, 255, 0.3); }
+        .btn-secondary { background: transparent; color: var(--neon-blue); border: 2px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 0 40px rgba(0, 243, 255, 0.5); }
+
+        .dashboard-section { padding: 100px 0; background: rgba(5, 5, 16, 0.6); backdrop-filter: blur(10px); border-radius: 20px; margin: 50px 0; border: 1px solid rgba(0, 243, 255, 0.2); }
+        .section-title { font-family: 'Orbitron', sans-serif; font-size: 3rem; text-align: center; margin-bottom: 60px; background: linear-gradient(45deg, var(--neon-green), var(--neon-blue)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 50px; }
+        .dashboard-card { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 30px; border: 1px solid rgba(0, 243, 255, 0.2); backdrop-filter: blur(10px); transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); }
+        .dashboard-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0, 243, 255, 0.2); border-color: var(--neon-blue); }
+        .card-title { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin-bottom: 20px; color: var(--neon-blue); }
+        .chart-container { height: 250px; margin: 20px 0; position: relative; }
+
+        .visualization-section { padding: 100px 0; position: relative; }
+        .viz-container { height: 500px; background: rgba(0, 0, 0, 0.3); border-radius: 15px; border: 1px solid rgba(0, 243, 255, 0.3); margin: 40px 0; position: relative; overflow: hidden; }
+
+        .data-section { padding: 80px 0; }
+        .data-table { width: 100%; background: rgba(255, 255, 255, 0.05); border-radius: 15px; overflow: hidden; border: 1px solid rgba(0, 243, 255, 0.2); margin: 30px 0; }
+        .table-header { background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); padding: 20px; font-family: 'Orbitron', sans-serif; font-size: 1.2rem; }
+        .table-row { display: grid; grid-template-columns: repeat(4, 1fr); padding: 15px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); transition: background 0.3s ease; }
+        .table-row:last-child { border-bottom: none; }
+        .table-row:hover { background: rgba(0, 243, 255, 0.1); }
+        .table-row.header { background: rgba(0, 243, 255, 0.1); font-weight: 600; color: var(--neon-blue); }
+
+        footer { background: rgba(5, 5, 16, 0.9); padding: 60px 0 30px; border-top: 1px solid rgba(0, 243, 255, 0.3); margin-top: 100px; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
+        .footer-column h3 { font-family: 'Orbitron', sans-serif; color: var(--neon-blue); margin-bottom: 20px; }
+        .footer-links a { color: rgba(255, 255, 255, 0.7); text-decoration: none; display: block; margin-bottom: 10px; transition: color 0.3s ease; }
+        .footer-links a:hover { color: var(--neon-green); }
+        .copyright { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.5); }
+
+        .hamburger { display: none; cursor: pointer; z-index: 1001; }
+        .hamburger div { width: 25px; height: 3px; background-color: white; margin: 5px; transition: all 0.3s ease; }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 3rem; }
+            .section-title { font-size: 2rem; }
+            .nav-links { position: fixed; right: 0; top: 0; height: 100vh; width: 60%; background: var(--dark-space); flex-direction: column; align-items: center; justify-content: center; gap: 50px; transform: translateX(100%); transition: transform 0.5s ease-in-out; z-index: 1000; }
+            .nav-links.active { transform: translateX(0); }
+            .hamburger { display: block; position: absolute; top: 28px; right: 20px; z-index: 1001; }
+            .hamburger.toggle .line1 { transform: rotate(-45deg) translate(-5px, 6px); }
+            .hamburger.toggle .line2 { opacity: 0; }
+            .hamburger.toggle .line3 { transform: rotate(45deg) translate(-5px, -6px); }
+        }
+
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px var(--card-glow); } 50% { box-shadow: 0 0 40px var(--neon-blue); } }
+        .glowing { animation: glow 3s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+    <div id="three-container"></div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">FLOODSENTINEL.AI</div>
+                <nav class="nav-links">
+                    <a href="#dashboard">Live Dashboard</a>
+                    <a href="#visualization">3D Map</a>
+                    <a href="#data">Data Intelligence</a>
+                    <a href="#contact">Connect</a>
+                </nav>
+                <div class="hamburger">
+                    <div class="line1"></div><div class="line2"></div><div class="line3"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title floating">BEYOND THE HIGH-WATER MARK</h1>
+                    <p class="hero-subtitle">Harnessing Sentinel Satellite Data & AI to Build Flood-Proof Resilience for Garissa County. Transforming disaster response from reactive to predictive through cutting-edge GeoAI technology.</p>
+                    <div class="cta-buttons"><button class="btn btn-primary glowing">View Live Predictions</button><button class="btn btn-secondary">Download Technical Paper</button></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard" class="dashboard-section">
+            <div class="container">
+                <h2 class="section-title">REAL-TIME FLOOD INTELLIGENCE</h2>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card"><h3 class="card-title">SENTINEL-1 FLOOD EXTENT</h3><div class="chart-container"><canvas id="floodChart"></canvas></div><p>Live satellite radar data showing current flood inundation areas along Tana River basin.</p></div>
+                    <div class="dashboard-card"><h3 class="card-title">EARLY WARNING SYSTEM</h3><div class="chart-container"><canvas id="warningChart"></canvas></div><p>AI-predicted flood risk levels for next 72 hours across Garissa sub-counties.</p></div>
+                    <div class="dashboard-card"><h3 class="card-title">AGRICULTURAL IMPACT</h3><div class="chart-container"><canvas id="agricultureChart"></canvas></div><p>Crop yield predictions and soil nutrient monitoring in flood-affected regions.</p></div>
+                    <div class="dashboard-card"><h3 class="card-title">COMMUNITY ALERT STATUS</h3><div class="chart-container"><canvas id="communityChart"></canvas></div><p>Real-time evacuation alerts and resource allocation across vulnerable communities.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="visualization" class="visualization-section">
+            <div class="container">
+                <h2 class="section-title">3D GEO-SPATIAL INTELLIGENCE MAP</h2>
+                <div class="viz-container" id="geo-viz"></div>
+            </div>
+        </section>
+
+        <section id="data" class="data-section">
+            <div class="container">
+                <h2 class="section-title">FLOOD IMPACT DATA ANALYSIS</h2>
+                <div class="data-table">
+                    <div class="table-header">SENTINEL-1 SATELLITE DATA PROCESSING</div>
+                    <div class="table-row header"><div>Parameter</div><div>Current Value</div><div>7-Day Trend</div><div>AI Confidence</div></div>
+                    <div class="table-row"><div>Flood Inundation Area</div><div>284 km²</div><div>↘️ Decreasing</div><div>94.7%</div></div>
+                    <div class="table-row"><div>Water Level Rise</div><div>+2.3m</div><div>↗️ Increasing</div><div>89.2%</div></div>
+                    <div class="table-row"><div>Agricultural Land Affected</div><div>156 km²</div><div>→ Stable</div><div>91.5%</div></div>
+                    <div class="table-row"><div>Communities at Risk</div><div>23 villages</div><div>↘️ Decreasing</div><div>96.3%</div></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column"><h3>GARISSA GEOAI INITIATIVE</h3><p>Transforming disaster management through artificial intelligence and satellite technology for sustainable development in ASAL regions.</p></div>
+                <div class="footer-column"><h3>QUICK LINKS</h3><div class="footer-links"><a href="#dashboard">Live Dashboard</a><a href="#visualization">3D Mapping</a><a href="#data">Data Analytics</a><a href="#">Technical Documentation</a></div></div>
+                <div class="footer-column"><h3>CONTACT</h3><div class="footer-links"><a href="mailto:jmsmuigai@gmail.com">jmsmuigai@gmail.com</a><a href="https://linkedin.com/in/james-mukoma-86534438/">LinkedIn Profile</a><a href="https://github.com/jmsmuigai">GitHub Repository</a></div></div>
+            </div>
+            <div class="copyright">&copy; <span id="copyright-year"></span> Garissa County GeoAI Initiative. Powered by Sentinel Data & Google AI.</div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // This script is a module to allow for imports, though OrbitControls is not used in this version.
+
+        // --- Hamburger Menu Logic ---
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('toggle');
+        });
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('toggle');
+                }
+            });
+        });
+
+        // --- Dynamic Copyright Year ---
+        document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+        // --- Three.js Background Scene ---
+        // This scene is for the full-page particle background.
+        const bgScene = new THREE.Scene();
+        const bgCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const bgRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        bgRenderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('three-container').appendChild(bgRenderer.domElement);
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 5000;
+        const posArray = new Float32Array(particlesCount * 3);
+        for(let i = 0; i < particlesCount * 3; i++) { posArray[i] = (Math.random() - 0.5) * 50; }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({ size: 0.02, color: new THREE.Color(0x00f3ff), transparent: true, opacity: 0.6 });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        bgScene.add(particlesMesh);
+        bgCamera.position.z = 5;
+
+        function animateBackground() {
+            requestAnimationFrame(animateBackground);
+            particlesMesh.rotation.y += 0.0005;
+            particlesMesh.rotation.x += 0.0002;
+            bgRenderer.render(bgScene, bgCamera);
+        }
+        animateBackground();
+
+        // --- Three.js Visualization Scene ---
+        // This scene is specifically for the 3D map placeholder.
+        const vizContainer = document.getElementById('geo-viz');
+        const vizScene = new THREE.Scene();
+        const vizCamera = new THREE.PerspectiveCamera(75, vizContainer.clientWidth / vizContainer.clientHeight, 0.1, 1000);
+        const vizRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        vizRenderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
+        vizContainer.appendChild(vizRenderer.domElement);
+
+        const geometry = new THREE.SphereGeometry(1.5, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00f3ff, wireframe: true });
+        const sphere = new THREE.Mesh(geometry, material);
+        vizScene.add(sphere);
+        vizCamera.position.z = 3;
+
+        function animateVisualization() {
+            requestAnimationFrame(animateVisualization);
+            sphere.rotation.y += 0.005;
+            vizRenderer.render(vizScene, vizCamera);
+        }
+        animateVisualization();
+
+        // --- Chart.js Dashboards ---
+        const chartOptions = {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false, labels: { color: 'white' } } },
+            scales: {
+                y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } },
+                x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } }
+            }
+        };
+
+        // Chart 1: Flood Extent
+        new Chart(document.getElementById('floodChart').getContext('2d'), { type: 'line', data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: 'Flood Extent (km²)', data: [320, 450, 280, 190, 240, 180], borderColor: '#00f3ff', backgroundColor: 'rgba(0, 243, 255, 0.1)', tension: 0.4, fill: true }] }, options: chartOptions });
+
+        // Chart 2: Early Warning
+        new Chart(document.getElementById('warningChart').getContext('2d'), { type: 'bar', data: { labels: ['Bura', 'Dadaab', 'Fafi', 'Garissa', 'Hulugho', 'Ijara'], datasets: [{ label: 'Flood Risk Level', data: [85, 92, 78, 65, 88, 72], backgroundColor: ['#ff2a6d', '#ff2a6d', '#fbbc04', '#05ffa1', '#ff2a6d', '#fbbc04'] }] }, options: chartOptions });
+
+        // Chart 3: Agricultural Impact (FIXED)
+        new Chart(document.getElementById('agricultureChart').getContext('2d'), { type: 'radar', data: { labels: ['Maize', 'Sorghum', 'Tomatoes', 'Onions', 'Pasture'], datasets: [{ label: 'Yield Impact Factor', data: [0.6, 0.5, 0.7, 0.8, 0.4], borderColor: '#05ffa1', backgroundColor: 'rgba(5, 255, 161, 0.2)', fill: true }] }, options: chartOptions });
+
+        // Chart 4: Community Alert Status (FIXED)
+        new Chart(document.getElementById('communityChart').getContext('2d'), { type: 'doughnut', data: { labels: ['Alerts Sent', 'Confirmed Safe', 'Pending'], datasets: [{ label: 'Alerts', data: [300, 190, 110], backgroundColor: ['#b967ff', '#00f3ff', 'rgba(255,255,255,0.2)'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: 'white' } } } } });
+
+        // --- Window Resize Handler ---
+        window.addEventListener('resize', function() {
+            // Background
+            bgCamera.aspect = window.innerWidth / window.innerHeight;
+            bgCamera.updateProjectionMatrix();
+            bgRenderer.setSize(window.innerWidth, window.innerHeight);
+            // Visualization
+            vizCamera.aspect = vizContainer.clientWidth / vizContainer.clientHeight;
+            vizCamera.updateProjectionMatrix();
+            vizRenderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
+        });
+    </script>
+</body>
+</html>
